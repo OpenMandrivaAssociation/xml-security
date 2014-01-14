@@ -1,0 +1,35 @@
+diff --git a/src/test/java/org/apache/xml/security/test/utils/OldApiTest.java b/src/test/java/org/apache/xml/security/test/utils/OldApiTest.java
+index 2499a28..84ff7ab 100644
+--- a/src/test/java/org/apache/xml/security/test/utils/OldApiTest.java
++++ b/src/test/java/org/apache/xml/security/test/utils/OldApiTest.java
+@@ -149,30 +149,4 @@ public class OldApiTest extends org.junit.Assert {
+         resolver1.resolve(uri1, "test1");
+     }
+     
+-    @org.junit.Test
+-    public void testOldKeyResolverSpi() throws Exception {
+-        KeyResolver.register(OldKeyResolverSpi.class.getName(), true);
+-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();				
+-        Element el = ((Element)doc.createElement("test"));
+-        PublicKey pk = KeyResolver.getPublicKey(el, "!!!testUri", null);
+-        assertNotNull(pk);
+-        assertTrue(pk instanceof PublicKeyMock);
+-        assertEquals(2, OldKeyResolverSpi.number);
+-        PublicKey pk1 = KeyResolver.getPublicKey(el, "!!!testUri", null);
+-        assertNotSame(pk, pk1);
+-        assertEquals(3, OldKeyResolverSpi.number);
+-    }
+-
+-    @org.junit.Test
+-    public void testOldKeyResolverSpiInKeyInfo() throws Exception {
+-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+-        Element el = (Element)doc.createElementNS("http://www.w3.org/2000/09/xmldsig#","KeyInfo");
+-        el.appendChild((Element)doc.createElementNS("http://www.w3.org/2000/09/xmldsig#","KeyInfo"));
+-        KeyInfo ki = new KeyInfo(el,"!!!testUri");
+-        PublicKey pk = new PublicKeyMock();
+-        ki.registerInternalKeyResolver(new OldKeyResolverNoPublicConsSpi(pk));
+-        assertNotNull(ki.getPublicKey());
+-
+-    }
+-    
+ }
