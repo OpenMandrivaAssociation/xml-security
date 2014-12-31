@@ -30,30 +30,31 @@
 #
 
 %global oname xmlsec
+%global _version %(echo %{version} | tr . _ )
 
 Name:           xml-security
-Version:        1.5.5
-Release:        1.0%{?dist}
+Version:        1.5.7
+Release:        1.1
 Epoch:          0
 Summary:        Implementation of W3C security standards for XML
+Group:		Development/Java
 License:        ASL 2.0
 URL:            http://santuario.apache.org/
-Source0:        http://archive.apache.org/dist/santuario/java-library/1_5_5/xml-security-src-1_5_5.zip
+Source0:        http://archive.apache.org/dist/santuario/java-library/%{_version}/%{name}-src-%{_version}.zip
 # Certain tests fail with new JUnit
-Patch0:         %{name}-removed-tests.patch
+Patch0:         %{name}-1.5.7-removed-tests.patch
 
-BuildRequires:  java-devel
 BuildRequires:  maven-local
 BuildRequires:  maven-shared
 BuildRequires:  maven-release-plugin
-BuildRequires:  maven-surefire-provider-junit4
-BuildRequires:  junit
-BuildRequires:  apache-commons-logging
-BuildRequires:  log4j
-BuildRequires:  xalan-j2
-BuildRequires:  xerces-j2
-BuildRequires:  xml-commons-apis
-BuildRequires:  bouncycastle
+BuildRequires:  maven-surefire-provider-junit
+BuildRequires:  mvn(commons-logging:commons-logging)
+BuildRequires:  mvn(junit:junit)
+BuildRequires:  mvn(log4j:log4j:1.2.17)
+BuildRequires:  mvn(org.bouncycastle:bcprov-jdk15on)
+BuildRequires:  mvn(xalan:xalan)
+BuildRequires:  mvn(xerces:xercesImpl)
+BuildRequires:  mvn(xml-apis:xml-apis)
 
 BuildArch:      noarch
 
@@ -77,10 +78,20 @@ Summary:        Samples for %{name}
 Samples for %{name}.
 
 %prep
-%setup -q -n xml-security-1_5_5
-%patch0 -p1
+%setup -q -n %{name}-%{_version}
+%patch0 -p0
 
-sed -i "s|bcprov-jdk15on|bcprov-jdk16|" pom.xml
+#sed -i "s|bcprov-jdk15on|bcprov-jdk16|" pom.xml
+
+# javax.xml.crypto.MarshalException: ECKeyValue not supported
+rm -r src/test/java/javax/xml/crypto/test/dsig/InteropXMLDSig11Test.java
+# IllegalArgumentException: Incorrect length for compressed encoding
+rm -r src/test/java/org/apache/xml/security/test/signature/ECDSASignatureTest.java
+
+rm -r src/test/java/javax/xml/crypto/test/dsig/PKSignatureAlgorithmTest.java \
+ src/test/java/org/apache/xml/security/test/dom/algorithms/DigestAlgorithmTest.java \
+ src/test/java/org/apache/xml/security/test/dom/algorithms/PKSignatureAlgorithmTest.java \
+ src/test/java/org/apache/xml/security/test/encryption/XMLEncryption11Test.java
 
 %build
 
@@ -104,6 +115,12 @@ cp -pr samples/* $RPM_BUILD_ROOT%{_datadir}/%{name}
 %{_datadir}/%{name}
 
 %changelog
+* Tue Oct 28 2014 gil cattaneo <puntogil@libero.it> 0:1.5.7-1
+- update to 1.5.7 (rhbz#1045257,1157992. security fix for CVE-2013-4517)
+
+* Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.5.5-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Sun Oct 27 2013 gil cattaneo <puntogil@libero.it> 0:1.5.5-1
 - update to 1.5.5
 
