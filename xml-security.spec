@@ -34,7 +34,7 @@
 
 Name:           xml-security
 Version:        1.5.7
-Release:        1.1
+Release:        1.2
 Epoch:          0
 Summary:        Implementation of W3C security standards for XML
 Group:		Development/Java
