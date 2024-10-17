@@ -39,7 +39,7 @@ Epoch:          0
 Summary:        Implementation of W3C security standards for XML
 Group:		Development/Java
 License:        ASL 2.0
-URL:            http://santuario.apache.org/
+URL:            https://santuario.apache.org/
 Source0:        http://archive.apache.org/dist/santuario/java-library/%{_version}/%{name}-src-%{_version}.zip
 # Certain tests fail with new JUnit
 Patch0:         %{name}-1.5.7-removed-tests.patch
